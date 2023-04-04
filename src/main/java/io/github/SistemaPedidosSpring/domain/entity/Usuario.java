@@ -1,15 +1,15 @@
 package io.github.SistemaPedidosSpring.domain.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "usuario")
 public class Usuario {
 
     @Id

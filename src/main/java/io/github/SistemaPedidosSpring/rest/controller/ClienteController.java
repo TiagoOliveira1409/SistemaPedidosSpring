@@ -2,6 +2,7 @@ package io.github.SistemaPedidosSpring.rest.controller;
 
 import io.github.SistemaPedidosSpring.domain.entity.Cliente;
 import io.github.SistemaPedidosSpring.domain.repository.Clientes;
+import io.swagger.annotations.*;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping(value = "/api/clientes")
+@Api
 public class ClienteController {
 
     Clientes clientes;
@@ -22,7 +24,14 @@ public class ClienteController {
     }
 
     @GetMapping(value = "/{id}")
-    public Cliente getClienteById(@PathVariable Integer id){
+    @ApiOperation("Obter detalhes de com cliente")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Cliente encontrado."),
+            @ApiResponse(code = 404, message = "Cliente não encontrado para o ID informado.")
+    })
+    public Cliente getClienteById(
+            @PathVariable
+            @ApiParam("Id do cliente") Integer id){
 
         return clientes
                 .findById(id)
@@ -35,7 +44,14 @@ public class ClienteController {
 
     @PostMapping
     @ResponseStatus(CREATED)
-    public Cliente saveClienteByNome(@RequestBody @Valid Cliente cliente){
+    @ApiOperation("Salvar um cliente por nome.")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Cliente salvo."),
+            @ApiResponse(code = 400, message = "Erro de validação.")
+    })
+    public Cliente saveClienteByNome(
+            @RequestBody
+            @Valid Cliente cliente){
         return clientes.save(cliente);
     }
 
@@ -77,7 +93,7 @@ public class ClienteController {
                 .matching()
                 .withIgnoreCase()
                 .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
-        Example example = Example.of(filtro,matcher);
+        Example<Cliente> example = Example.of(filtro,matcher);
         return clientes.findAll(example);
     }
 }

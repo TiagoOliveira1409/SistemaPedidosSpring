@@ -1,6 +1,7 @@
 package io.github.SistemaPedidosSpring.domain.service.impl;
 
 import io.github.SistemaPedidosSpring.domain.entity.Usuario;
+import io.github.SistemaPedidosSpring.domain.exceptions.SenhaInvalidaException;
 import io.github.SistemaPedidosSpring.domain.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -14,13 +15,23 @@ import org.springframework.stereotype.Service;
 public class UsuarioServiceImpl implements UserDetailsService{
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    UsuarioRepository usuarioRepository;
 
     @Autowired
-    UsuarioRepository usuarioRepository;
+    PasswordEncoder encoder;
 
     public Usuario save(Usuario usuario){
         return usuarioRepository.save(usuario);
+    }
+
+    public void autenticar(Usuario usuario){
+        UserDetails user = loadUserByUsername(usuario.getLogin());
+
+        boolean senhasBatem = encoder.matches(usuario.getSenha(), user.getPassword());
+
+        if (!senhasBatem){
+            throw new SenhaInvalidaException("Senha Inválida");
+        }
     }
 
     @Override
@@ -35,7 +46,7 @@ public class UsuarioServiceImpl implements UserDetailsService{
         return User
                 .builder()
                 .username(user.getLogin())
-                .password(passwordEncoder.encode(user.getSenha()))
+                .password(user.getSenha())
                 .roles(roles)
                 .build();
     }
