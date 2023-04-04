@@ -1,2 +1,8 @@
-# SistemaPedidosSpring
-Um sistema de pedidos de produtos com autenticação feito em Spring Boot
+# Sistema de Pedidos Spring
+Um sistema de pedidos funcional desenvolvido em Java
+- Spring Boot
+- Spring Security
+- Jpa
+- Lombok
+- Jwt Token
+- Swagger
